@@ -12,7 +12,40 @@ function App() {
   const [cart, setCart] = useState([]);
 
   function addToCart(book) {
-    setCart([...cart, {...book, quantity: 1}])
+    const dupeItem = cart.find((item) => item.id === book.id);
+    setCart((oldCart) =>
+      dupeItem
+        ? [
+            ...oldCart.map((item) => {
+              return item.id === dupeItem.id
+                ? {
+                    ...item,
+                    quantity: item.quantity + 1,
+                  }
+                : item;
+            }),
+          ]
+        : [...oldCart, { ...book, quantity: 1 }]
+    );
+  }
+
+  function updateCart(item, newQuantity) {
+    setCart((oldCart) =>
+      oldCart.map((oldItem) => {
+        if (oldItem.id === item.id) {
+          return {
+            ...oldItem,
+            quantity: newQuantity,
+          };
+        } else {
+          return oldItem;
+        }
+      })
+    );
+  }
+
+  function removeItem(item) {
+    setCart((oldCart) => oldCart.filter((cartItem) => cartItem.id !== item.id));
   }
 
   function numberOfItems() {
